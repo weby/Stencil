@@ -7,7 +7,7 @@ public struct Lexer {
 
   func createToken(string:String) -> Token {
     func strip() -> String {
-      return string[string.startIndex.successor().successor()..<string.endIndex.predecessor().predecessor()].trim(" ")
+      return string[string.startIndex.successor().successor()..<string.endIndex.predecessor().predecessor()].trim(character: " ")
     }
 
     if string.hasPrefix("{{") {
@@ -36,14 +36,14 @@ public struct Lexer {
     while !scanner.isEmpty {
       if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
         if !text.1.isEmpty {
-          tokens.append(createToken(text.1))
+          tokens.append(createToken(string: text.1))
         }
 
         let end = map[text.0]!
         let result = scanner.scan(until: end, returnUntil: true)
-        tokens.append(createToken(result))
+        tokens.append(createToken(string: result))
       } else {
-        tokens.append(createToken(scanner.content))
+        tokens.append(createToken(string: scanner.content))
         scanner.content = ""
       }
     }
@@ -140,8 +140,8 @@ extension String {
   }
 
   func trim(character: Character) -> String {
-    let first = findFirstNot(character) ?? startIndex
-    let last = findLastNot(character) ?? endIndex
+    let first = findFirstNot(character: character) ?? startIndex
+    let last = findLastNot(character: character) ?? endIndex
     return self[first..<last]
   }
 }

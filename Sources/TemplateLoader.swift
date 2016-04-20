@@ -16,11 +16,11 @@ public class TemplateLoader {
     }
   }
 
-  public func loadTemplate(templateName: String) -> Template? {
-    return loadTemplate([templateName])
+  public func loadTemplate(name templateName: String) -> Template? {
+    return loadTemplate(names: [templateName])
   }
 
-  public func loadTemplate(templateNames: [String]) -> Template? {
+  public func loadTemplate(names templateNames: [String]) -> Template? {
     for path in paths {
       for templateName in templateNames {
         let templatePath = path + Path(templateName)

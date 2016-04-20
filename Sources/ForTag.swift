@@ -16,14 +16,14 @@ public class ForNode : NodeType {
     
     var emptyNodes = [NodeType]()
     
-    let forNodes = try parser.parse(until(["endfor", "empty"]))
+    let forNodes = try parser.parse(until: until(tags: ["endfor", "empty"]))
     
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endfor` was not found.")
     }
     
     if token.contents == "empty" {
-      emptyNodes = try parser.parse(until(["endfor"]))
+      emptyNodes = try parser.parse(until: until(tags: ["endfor"]))
       parser.nextToken()
     }
     
@@ -38,7 +38,7 @@ public class ForNode : NodeType {
   }
   
   public func render(context: Context) throws -> String {
-    let values = try variable.resolve(context)
+    let values = try variable.resolve(context: context)
     
     if let values = values as? [Any] where values.count > 0 {
       let count = values.count
@@ -62,15 +62,15 @@ public class ForNode : NodeType {
                                             "counter": index + 1,
                                             ]
           
-          return try context.push([loopVariable: item, "forloop": forContext]) {
-            try renderNodes(nodes, context)
+          return try context.push(dictionary: [loopVariable: item, "forloop": forContext]) {
+            try renderNodes(nodes: nodes, context)
           }
           }.joined(separator:"")
       #endif
     }
     
     return try context.push {
-      try renderNodes(emptyNodes, context)
+      try renderNodes(nodes: emptyNodes, context)
     }
   }
 }

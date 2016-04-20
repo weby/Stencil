@@ -9,15 +9,19 @@ func toString(value: Any?) -> String? {
 }
 
 func capitalise(value: Any?) -> Any? {
-  if let value = toString(value) {
-    return value.capitalizedString
+  if let value = toString(value: value) {
+    #if os(Linux)
+      return value.capitalizedString
+    #else
+      return value.capitalized
+    #endif
   }
 
   return value
 }
 
 func uppercase(value: Any?) -> Any? {
-  if let value = toString(value) {
+  if let value = toString(value: value) {
     return value.uppercased()
   }
 
@@ -25,7 +29,7 @@ func uppercase(value: Any?) -> Any? {
 }
 
 func lowercase(value: Any?) -> Any? {
-  if let value = toString(value) {
+  if let value = toString(value: value) {
     return value.lowercased()
   }
 

@@ -88,11 +88,11 @@ class ExtendsNode : NodeType {
       throw TemplateSyntaxError("Template loader not in context")
     }
     
-    guard let templateName = try self.templateName.resolve(context) as? String else {
+    guard let templateName = try self.templateName.resolve(context: context) as? String else {
       throw TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
     }
     
-    guard let template = loader.loadTemplate(templateName) else {
+    guard let template = loader.loadTemplate(name: templateName) else {
       #if !swift(>=3.0)
         let paths:String = loader.paths.map { $0.description }.joinWithSeparator(", ")
       #else
@@ -102,8 +102,8 @@ class ExtendsNode : NodeType {
     }
     
     let blockContext = BlockContext(blocks: blocks)
-    return try context.push([BlockContext.contextKey: blockContext]) {
-      return try template.render(context)
+    return try context.push(dictionary: [BlockContext.contextKey: blockContext]) {
+      return try template.render(context: context)
     }
   }
 }
@@ -121,7 +121,7 @@ class BlockNode : NodeType {
     }
     
     let blockName = bits[1]
-    let nodes = try parser.parse(until(["endblock"]))
+    let nodes = try parser.parse(until: until(tags: ["endblock"]))
     parser.nextToken()
     return BlockNode(name:blockName, nodes:nodes)
   }
@@ -132,10 +132,10 @@ class BlockNode : NodeType {
   }
   
   func render(context: Context) throws -> String {
-    if let blockContext = context[BlockContext.contextKey] as? BlockContext, node = blockContext.pop(name) {
-      return try node.render(context)
+    if let blockContext = context[BlockContext.contextKey] as? BlockContext, node = blockContext.pop(blockName: name) {
+      return try node.render(context: context)
     }
     
-    return try renderNodes(nodes, context)
+    return try renderNodes(nodes: nodes, context)
   }
 }

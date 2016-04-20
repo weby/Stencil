@@ -28,10 +28,10 @@ public class TokenParser {
   
   /// Parse the given tokens into nodes
   public func parse() throws -> [NodeType] {
-    return try parse(nil)
+    return try parse(until: nil)
   }
   
-  public func parse(parse_until:((parser:TokenParser, token:Token) -> (Bool))?) throws -> [NodeType] {
+  public func parse(until parseUntil: ((parser:TokenParser, token:Token) -> (Bool))?) throws -> [NodeType] {
     var nodes = [NodeType]()
     
     while tokens.count > 0 {
@@ -41,12 +41,12 @@ public class TokenParser {
       case .Text(let text):
         nodes.append(TextNode(text: text))
       case .Variable:
-        nodes.append(VariableNode(variable: try compileFilter(token.contents)))
+        nodes.append(VariableNode(variable: try compileFilter(token: token.contents)))
       case .Block:
         let tag = token.components().first
         
-        if let parse_until = parse_until where parse_until(parser: self, token: token) {
-          prependToken(token)
+        if let parseUntil = parseUntil where parseUntil(parser: self, token: token) {
+          prependToken(token: token)
           return nodes
         }
         

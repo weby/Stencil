@@ -9,7 +9,7 @@ class FilterExpression : Resolvable {
     #if !swift(>=3.0)
       let bits = token.characters.split("|").map({ String($0).trim(" ") })
     #else
-      let bits = token.characters.split(separator:"|").map({ String($0).trim(" ") })
+      let bits = token.characters.split(separator:"|").map({ String($0).trim(character: " ") })
     #endif
     if bits.isEmpty {
       filters = []
@@ -21,7 +21,7 @@ class FilterExpression : Resolvable {
     let filterBits = bits[1 ..< bits.endIndex]
     
     do {
-      filters = try filterBits.map { try parser.findFilter($0) }
+      filters = try filterBits.map { try parser.findFilter(name: $0) }
     } catch {
       filters = []
       throw error
@@ -29,7 +29,7 @@ class FilterExpression : Resolvable {
   }
   
   func resolve(context: Context) throws -> Any? {
-    let result = try variable.resolve(context)
+    let result = try variable.resolve(context: context)
     
     return try filters.reduce(result) { x, y in
       return try y(x)
@@ -64,7 +64,7 @@ public struct Variable : Equatable, Resolvable {
     }
     
     for bit in lookup() {
-      current = normalize(current)
+      current = normalize(current: current)
       
       if let context = current as? Context {
         current = context[bit]
@@ -95,7 +95,7 @@ public struct Variable : Equatable, Resolvable {
       }
     }
     
-    return normalize(current)
+    return normalize(current: current)
   }
 }
 
@@ -134,9 +134,9 @@ extension Dictionary : Normalizable {
     
     for (key, value) in self {
       if let key = key as? String {
-        dictionary[key] = Stencil.normalize(value)
+        dictionary[key] = Stencil.normalize(current: value)
       } else if let key = key as? CustomStringConvertible {
-        dictionary[key.description] = Stencil.normalize(value)
+        dictionary[key.description] = Stencil.normalize(current: value)
       }
     }
     

@@ -52,13 +52,13 @@ public enum Token : Equatable {
   public func components() -> [String] {
     switch self {
     case .Block(let value):
-      return smartSplit(value)
+      return smartSplit(value: value)
     case .Variable(let value):
-      return smartSplit(value)
+      return smartSplit(value: value)
     case .Text(let value):
-      return smartSplit(value)
+      return smartSplit(value: value)
     case .Comment(let value):
-      return smartSplit(value)
+      return smartSplit(value: value)
     }
   }
 

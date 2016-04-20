@@ -23,11 +23,11 @@ public class IncludeNode : NodeType {
       throw TemplateSyntaxError("Template loader not in context")
     }
     
-    guard let templateName = try self.templateName.resolve(context) as? String else {
+    guard let templateName = try self.templateName.resolve(context: context) as? String else {
       throw TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
     }
     
-    guard let template = loader.loadTemplate(templateName) else {
+    guard let template = loader.loadTemplate(name: templateName) else {
       #if !swift(>=3.0)
         let paths = loader.paths.map { $0.description }.joinWithSeparator(", ")
       #else
@@ -36,7 +36,7 @@ public class IncludeNode : NodeType {
       throw TemplateSyntaxError("'\(templateName)' template not found in \(paths)")
     }
     
-    return try template.render(context)
+    return try template.render(context: context)
   }
 }
 
