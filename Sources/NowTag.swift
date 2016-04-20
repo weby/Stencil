@@ -25,7 +25,7 @@
     
     public func render(context: Context) throws -> String {
       let date = NSDate()
-      let format = try self.format.resolve(context)
+      let format = try self.format.resolve(context: context)
       var formatter:NSDateFormatter?
       
       if let format = format as? NSDateFormatter {

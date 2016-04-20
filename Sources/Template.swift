@@ -11,14 +11,14 @@ public class Template {
   
   /// Create a template with the given name inside the given bundle
   public convenience init(named:String, inBundle bundle:NSBundle? = nil) throws {
-    #if swift(>=3.0)
-      let useBundle = bundle ??  NSBundle.mainBundle()
+    #if !swift(>=3.0)
+      let useBundle = bundle ?? NSBundle.mainBundle()
       guard let url = useBundle.URLForResource(named, withExtension: nil) else {
       throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError, userInfo: nil)
       }
     #else
       let useBundle = bundle ??  NSBundle.main()
-      guard let url = useBundle.url(forResource: named, withExtension: nil) else {
+      guard let url = useBundle.urlForResource(named, withExtension: nil) else {
         throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError, userInfo: nil)
       }
     #endif
@@ -48,6 +48,6 @@ public class Template {
     let context = context ?? Context()
     let parser = TokenParser(tokens: tokens, namespace: context.namespace)
     let nodes = try parser.parse()
-    return try renderNodes(nodes, context)
+    return try renderNodes(nodes: nodes, context)
   }
 }

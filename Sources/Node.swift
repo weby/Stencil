@@ -30,7 +30,7 @@ public func renderNodes(nodes:[NodeType], _ context:Context) throws -> String {
   #if !swift(>=3.0)
     return try nodes.map { try $0.render(context) }.joinWithSeparator("")
   #else
-    return try nodes.map { try $0.render(context) }.joined(separator:"")
+    return try nodes.map { try $0.render(context: context) }.joined(separator:"")
   #endif
 }
 
@@ -77,7 +77,7 @@ public class VariableNode : NodeType {
   }
   
   public func render(context: Context) throws -> String {
-    let result = try variable.resolve(context)
+    let result = try variable.resolve(context: context)
     
     if let result = result as? String {
       return result
