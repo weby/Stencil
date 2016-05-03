@@ -12,14 +12,14 @@ public class IfNode : NodeType {
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()
 
-    trueNodes = try parser.parse(until(["endif", "else"]))
+    trueNodes = try parser.parse(until: until(tags: ["endif", "else"]))
 
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
 
     if token.contents == "else" {
-      falseNodes = try parser.parse(until(["endif"]))
+      falseNodes = try parser.parse(until: until(tags: ["endif"]))
       parser.nextToken()
     }
 
@@ -35,14 +35,14 @@ public class IfNode : NodeType {
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()
 
-    falseNodes = try parser.parse(until(["endif", "else"]))
+    falseNodes = try parser.parse(until: until(tags: ["endif", "else"]))
 
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
 
     if token.contents == "else" {
-      trueNodes = try parser.parse(until(["endif"]))
+      trueNodes = try parser.parse(until: until(tags: ["endif"]))
       parser.nextToken()
     }
 
@@ -56,7 +56,7 @@ public class IfNode : NodeType {
   }
 
   public func render(context: Context) throws -> String {
-    let result = try variable.resolve(context)
+    let result = try variable.resolve(context: context)
     var truthy = false
 
     if let result = result as? [Any] {
@@ -69,9 +69,9 @@ public class IfNode : NodeType {
 
     return try context.push {
       if truthy {
-        return try renderNodes(trueNodes, context)
+        return try renderNodes(nodes: trueNodes, context)
       } else {
-        return try renderNodes(falseNodes, context)
+        return try renderNodes(nodes: falseNodes, context)
       }
     }
   }
