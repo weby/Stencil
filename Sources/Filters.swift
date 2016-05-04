@@ -10,7 +10,11 @@ func toString(value: Any?) -> String? {
 
 func capitalise(value: Any?) -> Any? {
   if let value = toString(value: value) {
-    return value.capitalized
+    #if os(OSX)
+      return value.capitalized
+    #else
+      return value.capitalizedString
+    #endif
   }
 
   return value
