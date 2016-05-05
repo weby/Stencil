@@ -7,7 +7,9 @@ public struct Lexer {
 
   func createToken(string:String) -> Token {
     func strip() -> String {
-      return string[string.startIndex.successor().successor()..<string.endIndex.predecessor().predecessor()].trim(character: " ")
+      let startIndex = string.index(string.startIndex, offsetBy: 2)
+      let endIndex = string.index(string.endIndex, offsetBy: -2)
+      return string[startIndex..<endIndex].trim(character: " ")
     }
 
     if string.hasPrefix("{{") {
@@ -64,7 +66,7 @@ class Scanner {
     return content.isEmpty
   }
 
-  func scan(until until: String, returnUntil: Bool = false) -> String {
+  func scan(until: String, returnUntil: Bool = false) -> String {
     if until.isEmpty {
       return ""
     }
@@ -84,13 +86,13 @@ class Scanner {
         return result
       }
 
-      index = index.successor()
+      index = content.index(after: index)
     }
 
     return ""
   }
 
-  func scan(until until: [String]) -> (String, String)? {
+  func scan(until: [String]) -> (String, String)? {
     if until.isEmpty {
       return nil
     }
@@ -106,7 +108,7 @@ class Scanner {
         }
       }
 
-      index = index.successor()
+      index = content.index(after: index)
     }
 
     return nil
@@ -121,19 +123,19 @@ extension String {
       if character != self[index] {
         return index
       }
-      index = index.successor()
+      index = self.index(after: index)
     }
 
     return nil
   }
 
   func findLastNot(character: Character) -> String.Index? {
-    var index = endIndex.predecessor()
+    var index = self.index(before: endIndex)
     while index != startIndex {
       if character != self[index] {
-        return index.successor()
+        return self.index(after: index)
       }
-      index = index.predecessor()
+      index = self.index(before: index)
     }
 
     return nil

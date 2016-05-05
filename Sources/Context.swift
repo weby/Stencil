@@ -52,7 +52,7 @@ public class Context {
   }
   
   /// Push a new level onto the context for the duration of the execution of the given closure
-  public func push<Result>(dictionary: [String: Any]? = nil, @noescape closure: (() throws -> Result)) rethrows -> Result {
+  public func push<Result>(dictionary: [String: Any]? = nil, closure: (@noescape () throws -> Result)) rethrows -> Result {
     push(dictionary: dictionary)
     defer { pop() }
     return try closure()
